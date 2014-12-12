@@ -1,0 +1,39 @@
+
+allprojects {
+	apply plugin: 'eclipse'
+
+	// Project version
+	version = '1.0'
+
+	tasks.eclipse.dependsOn(cleanEclipse)
+
+	repositories {
+		mavenCentral()
+	}
+
+	eclipse {
+		classpath {
+			defaultOutputDir = file('eclipse-build')
+		}
+	}
+}
+
+subprojects {
+	apply plugin: 'java'
+
+	sourceCompatibility = 1.7
+	compileJava.options.encoding = 'UTF-8'
+
+	dependencies {
+		testCompile 'junit:junit:4.11'
+	}
+}
+
+
+project(':fluent-jce-bouncy') {
+	dependencies {
+		compile project(':fluent-jce-core')
+		compile 'org.bouncycastle:bcprov-jdk16:1.46'
+	}
+}
+
