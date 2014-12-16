@@ -20,7 +20,7 @@ public class RsaFactory {
 	 * with a 2048 bit key you can maximum encrypt 245 bytes. To encrypt more than 245 bytes you
 	 * should use generate a random symmetric key then encrypt the symmetric key with RSA but encrypt
 	 * the actual data with the symmetric cipher. See {@linkplain #usingRsaAndAesCfb()}
-	 * 
+	 *
 	 * The {@link AsymmetricEncryptionEngine} returned by this method is thread-safe.
 	 */
 	public static AsymmetricEncryptionEngine usingRsa() {
@@ -28,7 +28,7 @@ public class RsaFactory {
 	}
 
 	/**
-	 * Returns an {@link CombinedEncryptionEngineImpl} that implements RSA + AES in CFB mode. This
+	 * Returns an {@link CombinedEncryptionEngine} that implements RSA + AES in CFB mode. This
 	 * combined encryption can be used to encrypt or decrypt larger amounts of data than the
 	 * engine returned by {@linkplain #usingRsa()}
 	 *
