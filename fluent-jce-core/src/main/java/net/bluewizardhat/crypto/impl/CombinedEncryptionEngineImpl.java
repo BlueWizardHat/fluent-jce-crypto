@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2014 BlueWizardHat
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.bluewizardhat.crypto.impl;
 
 import java.io.IOException;
@@ -81,7 +97,7 @@ public class CombinedEncryptionEngineImpl implements CombinedEncryptionEngine {
 		@Override
 		public byte[] decryptData(byte[] data) {
 			ByteBuffer dataBuffer = ByteBuffer.wrap(data);
-			
+
 			// Extract the encrypted symmetric key
 			int encryptedSymmetricKeyLength = dataBuffer.getInt();
 			byte[] encryptedSymmetricKey = new byte[encryptedSymmetricKeyLength];
@@ -124,7 +140,7 @@ public class CombinedEncryptionEngineImpl implements CombinedEncryptionEngine {
 			byte[] encryptedSymmetricKeyLengthBytes = readBytes(source, 4);
 			int encryptedSymmetricKeyLength = ByteBuffer.wrap(encryptedSymmetricKeyLengthBytes).getInt();
 			byte[] encryptedSymmetricKey = readBytes(source, encryptedSymmetricKeyLength);
-			
+
 			// Decrypt the symmetric key and create a usable SecretKey
 			SecretKey symmetricKey = new SecretKeySpec(
 					asymmetricEngine.withKey(asymmetricKey).decryptData(encryptedSymmetricKey),
@@ -133,7 +149,7 @@ public class CombinedEncryptionEngineImpl implements CombinedEncryptionEngine {
 			// Returns the decrypting CipherInputStream
 			return symmetricEngine.withKey(symmetricKey).createDecryptingInputStream(source);
 		}
-		
+
 		private byte[] readBytes(InputStream source, int length) throws IOException {
 			byte[] data = new byte[length];
 			int read = source.read(data);
@@ -143,6 +159,6 @@ public class CombinedEncryptionEngineImpl implements CombinedEncryptionEngine {
 			}
 			return data;
 		}
-		
+
 	}
 }

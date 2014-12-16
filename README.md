@@ -25,3 +25,21 @@ And the library will take care of all the tedious details about setting up the c
 Disclaimer: I am by no means an cryptography expert, and this library does not contain any encryption algorithm implementations, it is just a wrapper around JCE. I just saw a need for a simpler API for the sometimes rather cryptic API that is part of standard java.
 
 Note: If you want so use strong encryption with Oracle's JVM you will need to install the Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files for your JDK/JRE.
+
+
+# License
+
+Copyright (C) 2014 BlueWizardHat
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
