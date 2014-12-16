@@ -1,30 +1,40 @@
 A wrapper for Java Cryptography Extension (JCE) with a fluent syntax
 =========================================================================
 
-This small library implements a fluent style wrapper around Java JCE. Hopefully making it easy to implement encryption in Java applications in a proper way.
+This small library implements a fluent style wrapper around Java Cryptography Extension (JCE). Hopefully making it easy to implement encryption in java applications in a proper way.
 
 With this library you can encrypt some data like this
 
 	byte[] encrypted =
-		AesFactory.usingAesCfb()
-			.withPassword("secret", 256).encryptData(data);
+		AesFactory
+			.usingAesCfb()
+			.withPassword("secret", 256)
+			.encryptData(data);
 
 Or write data encrypted to a file
 
 		try (FileOutputStream fileOut = new FileOutputStream("file");
-				OutputStream out = AesFactory.usingAesCfb()
+				OutputStream out = AesFactory
+					.usingAesCfb()
 					.withPassword("secret", 256)
 					.createEncryptingOutputStream(fileOut)) {
 			out.write(data);
 			out.flush();
 		}
 
-And the library will take care of all the tedious details about setting up the cipher correctly, generating a proper initialization vector and all that.
-
+And the library will take care of all the tedious details about setting up the cipher correctly, salting the password, generating a proper initialization vector and all that.
 
 Disclaimer: I am by no means an cryptography expert, and this library does not contain any encryption algorithm implementations, it is just a wrapper around JCE. I just saw a need for a simpler API for the sometimes rather cryptic API that is part of standard java.
 
 Note: If you want so use strong encryption with Oracle's JVM you will need to install the Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files for your JDK/JRE.
+
+
+# Features
+
+* Fluent API - Easy to read and easy to write
+* Always salts passwords - Encrypt the same data multiple times using password encryption and you will get different results each time
+* Always generates a random IV for any non-ECB mode - Encrypt the same data multiple times using any non-ECB mode and you will get different results each time
+* Easy to expand with other algorithms should you need to
 
 
 # License
