@@ -47,7 +47,8 @@ public class TwofishFactory {
 	 * The {@link SymmetricEncryptionEngine} returned by this method is thread-safe.
 	 */
 	public static SymmetricEncryptionEngine usingTwofishCtr() {
-		return FluentEncryptionEngineImpl.getSymmetricEncryptionEngine("Twofish", "Twofish/CTR/PKCS5Padding", 16);
+		return FluentEncryptionEngineImpl.getSymmetricEncryptionEngine("Twofish", "Twofish/CTR/PKCS5Padding", 16,
+				BouncyCastleProvider.PROVIDER_NAME);
 	}
 
 	/**
@@ -55,7 +56,8 @@ public class TwofishFactory {
 	 * The {@link SymmetricEncryptionEngine} returned by this method is thread-safe.
 	 */
 	public static SymmetricEncryptionEngine usingTwofishCfb() {
-		return FluentEncryptionEngineImpl.getSymmetricEncryptionEngine("Twofish", "Twofish/CFB/PKCS5Padding", 16);
+		return FluentEncryptionEngineImpl.getSymmetricEncryptionEngine("Twofish", "Twofish/CFB/PKCS5Padding", 16,
+				BouncyCastleProvider.PROVIDER_NAME);
 	}
 
 	/**
@@ -63,7 +65,8 @@ public class TwofishFactory {
 	 * The {@link SymmetricEncryptionEngine} returned by this method is thread-safe.
 	 */
 	public static SymmetricEncryptionEngine usingTwofishCbc() {
-		return FluentEncryptionEngineImpl.getSymmetricEncryptionEngine("Twofish", "Twofish/CBC/PKCS5Padding", 16);
+		return FluentEncryptionEngineImpl.getSymmetricEncryptionEngine("Twofish", "Twofish/CBC/PKCS5Padding", 16,
+				BouncyCastleProvider.PROVIDER_NAME);
 	}
 
 	/**
@@ -72,7 +75,8 @@ public class TwofishFactory {
 	 * The {@link SymmetricEncryptionEngine} returned by this method is thread-safe.
 	 */
 	public static SymmetricEncryptionEngine usingTwofishEcb() {
-		return FluentEncryptionEngineImpl.getSymmetricEncryptionEngine("Twofish", "Twofish/ECB/PKCS5Padding", 0);
+		return FluentEncryptionEngineImpl.getSymmetricEncryptionEngine("Twofish", "Twofish/ECB/PKCS5Padding", 0,
+				BouncyCastleProvider.PROVIDER_NAME);
 	}
 
 	/**

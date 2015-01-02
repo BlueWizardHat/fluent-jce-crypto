@@ -47,7 +47,8 @@ public class CamelliaFactory {
 	 * The {@link SymmetricEncryptionEngine} returned by this method is thread-safe.
 	 */
 	public static SymmetricEncryptionEngine usingCamelliaCtr() {
-		return FluentEncryptionEngineImpl.getSymmetricEncryptionEngine("Camellia", "Camellia/CTR/PKCS5Padding", 16);
+		return FluentEncryptionEngineImpl.getSymmetricEncryptionEngine("Camellia", "Camellia/CTR/PKCS5Padding", 16,
+				BouncyCastleProvider.PROVIDER_NAME);
 	}
 
 	/**
@@ -55,7 +56,8 @@ public class CamelliaFactory {
 	 * The {@link SymmetricEncryptionEngine} returned by this method is thread-safe.
 	 */
 	public static SymmetricEncryptionEngine usingCamelliaCfb() {
-		return FluentEncryptionEngineImpl.getSymmetricEncryptionEngine("Camellia", "Camellia/CFB/PKCS5Padding", 16);
+		return FluentEncryptionEngineImpl.getSymmetricEncryptionEngine("Camellia", "Camellia/CFB/PKCS5Padding", 16,
+				BouncyCastleProvider.PROVIDER_NAME);
 	}
 
 	/**
@@ -63,7 +65,8 @@ public class CamelliaFactory {
 	 * The {@link SymmetricEncryptionEngine} returned by this method is thread-safe.
 	 */
 	public static SymmetricEncryptionEngine usingCamelliaCbc() {
-		return FluentEncryptionEngineImpl.getSymmetricEncryptionEngine("Camellia", "Camellia/CBC/PKCS5Padding", 16);
+		return FluentEncryptionEngineImpl.getSymmetricEncryptionEngine("Camellia", "Camellia/CBC/PKCS5Padding", 16,
+				BouncyCastleProvider.PROVIDER_NAME);
 	}
 
 	/**
@@ -72,7 +75,8 @@ public class CamelliaFactory {
 	 * The {@link SymmetricEncryptionEngine} returned by this method is thread-safe.
 	 */
 	public static SymmetricEncryptionEngine usingCamelliaEcb() {
-		return FluentEncryptionEngineImpl.getSymmetricEncryptionEngine("Camellia", "Camellia/ECB/PKCS5Padding", 0);
+		return FluentEncryptionEngineImpl.getSymmetricEncryptionEngine("Camellia", "Camellia/ECB/PKCS5Padding", 0,
+				BouncyCastleProvider.PROVIDER_NAME);
 	}
 
 	/**

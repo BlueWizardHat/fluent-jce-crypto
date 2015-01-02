@@ -25,6 +25,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 
@@ -71,6 +72,7 @@ public class FluentEncryptionEngineImpl implements SymmetricEncryptionEngine, As
 	private final int cipherIvSize;
 	private final boolean useHmac;
 	private final int generatedIvSize;
+	private final String provider;
 
 	private SecureRandomSupplier secureRandomSupplier = StaticCountingSecureRandomSupplier.getInstance();
 
@@ -81,7 +83,19 @@ public class FluentEncryptionEngineImpl implements SymmetricEncryptionEngine, As
 	 * @param cipherIvSize the size of the initialization vector in bytes or 0 if the chosen mode does not use an iv
 	 */
 	public static SymmetricEncryptionEngine getSymmetricEncryptionEngine(String algorithm, String transformation, int cipherIvSize) {
-		return new FluentEncryptionEngineImpl(algorithm, transformation, cipherIvSize, false);
+		return new FluentEncryptionEngineImpl(algorithm, transformation, cipherIvSize, false, null);
+	}
+
+	/**
+	 * Instantiates a new {@link SymmetricEncryptionEngine}
+	 * @param algorithm algorithm, for example "AES"
+	 * @param transformation transformation to use, for example "AES/CFB/PKCS5Padding"
+	 * @param cipherIvSize the size of the initialization vector in bytes or 0 if the chosen mode does not use an iv
+	 * @param provider name of the provider to use
+	 */
+	public static SymmetricEncryptionEngine getSymmetricEncryptionEngine(String algorithm, String transformation, int cipherIvSize,
+			String provider) {
+		return new FluentEncryptionEngineImpl(algorithm, transformation, cipherIvSize, false, provider);
 	}
 
 	/**
@@ -90,10 +104,20 @@ public class FluentEncryptionEngineImpl implements SymmetricEncryptionEngine, As
 	 * @param transformation transformation to use, for example "RSA/ECB/PKCS1Padding"
 	 */
 	public static AsymmetricEncryptionEngine getAsymmetricEncryptionEngine(String algorithm, String transformation) {
-		return new FluentEncryptionEngineImpl(algorithm, transformation, 0, false);
+		return new FluentEncryptionEngineImpl(algorithm, transformation, 0, false, null);
 	}
 
-	private FluentEncryptionEngineImpl(String algorithm, String transformation, int cipherIvSize, boolean useHmac) {
+	/**
+	 * Instantiates a new {@link AsymmetricEncryptionEngine}
+	 * @param algorithm algorithm, for example "RSA"
+	 * @param transformation transformation to use, for example "RSA/ECB/PKCS1Padding"
+	 * @param provider name of the provider to use
+	 */
+	public static AsymmetricEncryptionEngine getAsymmetricEncryptionEngine(String algorithm, String transformation, String provider) {
+		return new FluentEncryptionEngineImpl(algorithm, transformation, 0, false, provider);
+	}
+
+	private FluentEncryptionEngineImpl(String algorithm, String transformation, int cipherIvSize, boolean useHmac, String provider) {
 		if (algorithm == null) {
 			throw new IllegalArgumentException("algorithm may not be null");
 		}
@@ -108,6 +132,7 @@ public class FluentEncryptionEngineImpl implements SymmetricEncryptionEngine, As
 		this.transformation = transformation;
 		this.cipherIvSize = cipherIvSize;
 		this.useHmac = useHmac;
+		this.provider = provider;
 		generatedIvSize = useHmac ? Math.max(cipherIvSize, MIN_GENERATED_IV_SIZE) : cipherIvSize;
 	}
 
@@ -133,7 +158,7 @@ public class FluentEncryptionEngineImpl implements SymmetricEncryptionEngine, As
 
 	@Override
 	public SymmetricEncryptionEngine withHmac() {
-		return useHmac ? this : new FluentEncryptionEngineImpl(algorithm, transformation, cipherIvSize, true);
+		return useHmac ? this : new FluentEncryptionEngineImpl(algorithm, transformation, cipherIvSize, true, provider);
 	}
 
 	private static class SaltedKey {
@@ -295,10 +320,11 @@ public class FluentEncryptionEngineImpl implements SymmetricEncryptionEngine, As
 
 		private Cipher getCipher(int mode, Key key, Iv iv) {
 			try {
-				Cipher cipher = Cipher.getInstance(transformation);
+				Cipher cipher = (provider == null) ? Cipher.getInstance(transformation) : Cipher.getInstance(transformation, provider);
 				cipher.init(mode, key, iv.getIvParameterSpec());
 				return cipher;
-			} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException e) {
+			} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException
+					| NoSuchProviderException e) {
 				throw new CryptoException(algorithm, transformation, e);
 			}
 		}
