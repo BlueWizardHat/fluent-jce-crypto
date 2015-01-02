@@ -51,12 +51,16 @@ public interface KeyedFluentEncryptionEngine {
 	 * Creates a {@link CipherOutputStream} that when written to will encrypt the given data and write the encrypted data to
 	 * <code>target</code>. The {@link CipherOutputStream} should be flushed before closing or some data may not have been encrypted
 	 * and written.
+	 * Make sure that you do not write to the target OutputStream yourself after calling this method or you may not be able to
+	 * decrypt the data again.
 	 */
 	public CipherOutputStream createEncryptingOutputStream(OutputStream target) throws IOException;
 
 	/**
 	 * Creates a {@link CipherInputStream} that will read encrypted data from <code>source</code> and decrypt it.
 	 * This method may throw a {@link BadHmacException} if decrypting with HMAC using the wrong key, password or algorithm.
+	 * Make sure that you do not read from the source InputStream yourself after calling this method or you may not be able to
+	 * decrypt the data.
 	 */
 	public CipherInputStream createDecryptingInputStream(InputStream source) throws IOException;
 }
