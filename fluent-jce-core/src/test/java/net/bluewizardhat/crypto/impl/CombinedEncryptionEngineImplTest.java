@@ -45,7 +45,7 @@ public class CombinedEncryptionEngineImplTest {
 		byte[] expectedResult = randomBytes;
 
 		// Exercise
-		byte[] encrypted = encryptionEngine.withKey(keyPair.getPublic(), 128).encryptData(expectedResult);
+		byte[] encrypted = encryptionEngine.withKey(keyPair.getPublic(), 128).encryptData(expectedResult).getResult();
 		byte[] actualResult = encryptionEngine.withKey(keyPair.getPrivate(), 128).decryptData(encrypted);
 
 		// Verify
@@ -60,7 +60,7 @@ public class CombinedEncryptionEngineImplTest {
 		ByteArrayOutputStream encryptStream = new ByteArrayOutputStream();
 
 		// Exercise
-		try (OutputStream out = encryptionEngine.withKey(keyPair.getPublic(), 128).createEncryptingOutputStream(encryptStream)) {
+		try (OutputStream out = encryptionEngine.withKey(keyPair.getPublic(), 128).createEncryptingOutputStream(encryptStream).getResult()) {
 			out.write(expectedResult);
 			out.flush();
 		}
@@ -84,7 +84,7 @@ public class CombinedEncryptionEngineImplTest {
 		ByteArrayOutputStream encryptStream = new ByteArrayOutputStream();
 
 		// Exercise
-		try (OutputStream out = encryptionEngine.withKey(keyPair.getPublic(), 128).createEncryptingOutputStream(encryptStream)) {
+		try (OutputStream out = encryptionEngine.withKey(keyPair.getPublic(), 128).createEncryptingOutputStream(encryptStream).getResult()) {
 			out.write(expectedResult);
 			out.flush();
 		}
@@ -103,7 +103,7 @@ public class CombinedEncryptionEngineImplTest {
 		byte[] expectedResult = randomBytes;
 
 		// Exercise
-		byte[] encrypted = encryptionEngine.withKey(keyPair.getPublic(), 128).encryptData(expectedResult);
+		byte[] encrypted = encryptionEngine.withKey(keyPair.getPublic(), 128).encryptData(expectedResult).getResult();
 
 		ByteArrayInputStream encryptedStream = new ByteArrayInputStream(encrypted);
 		byte[] actualResult;

@@ -53,7 +53,7 @@ public class TripleDesFactoryTest {
 			byte[] expectedResult = randomBytes;
 
 			// Exercise
-			byte[] encrypted = keyedEngine.encryptData(expectedResult);
+			byte[] encrypted = keyedEngine.encryptData(expectedResult).getResult();
 			byte[] actualResult = keyedEngine.decryptData(encrypted);
 
 			// Verify
@@ -75,7 +75,7 @@ public class TripleDesFactoryTest {
 			byte[] expectedResult = randomBytes;
 
 			// Exercise
-			byte[] encrypted = keyedengine.encryptData(expectedResult);
+			byte[] encrypted = keyedengine.encryptData(expectedResult).getResult();
 			byte[] actualResult = keyedengine.decryptData(encrypted);
 
 			// Verify

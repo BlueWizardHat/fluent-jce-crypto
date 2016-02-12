@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Key;
+import java.security.MessageDigest;
 
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
@@ -38,7 +39,8 @@ public interface KeyedFluentEncryptionEngine {
 	 * Encrypts some data and returns the result. Note if the input data is large this operation may require a large amount of
 	 * memory, in such case you may be better of using {@link #createEncryptingOutputStream(OutputStream)}.
 	 */
-	public byte[] encryptData(byte[] data);
+	public EncryptionResult<byte[]> encryptData(byte[] data);
+	public EncryptionResult<byte[]> encryptData(byte[] data, MessageDigest digester);
 
 	/**
 	 * Decrypt some data and returns the result. Note if the input data is large this operation may require a large amount of
@@ -54,7 +56,8 @@ public interface KeyedFluentEncryptionEngine {
 	 * Make sure that you do not write to the target OutputStream yourself after calling this method or you may not be able to
 	 * decrypt the data again.
 	 */
-	public CipherOutputStream createEncryptingOutputStream(OutputStream target) throws IOException;
+	public EncryptionResult<CipherOutputStream> createEncryptingOutputStream(OutputStream target) throws IOException;
+	public EncryptionResult<CipherOutputStream> createEncryptingOutputStream(OutputStream target, MessageDigest digester) throws IOException;
 
 	/**
 	 * Creates a {@link CipherInputStream} that will read encrypted data from <code>source</code> and decrypt it.

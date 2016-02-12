@@ -31,7 +31,7 @@ public class RsaFactoryTest {
 		byte[] expectedResult = randomBytes;
 
 		// Exercise
-		byte[] encrypted = engine.withKey(keyPair.getPublic()).encryptData(expectedResult);
+		byte[] encrypted = engine.withKey(keyPair.getPublic()).encryptData(expectedResult).getResult();
 		byte[] actualResult = engine.withKey(keyPair.getPrivate()).decryptData(encrypted);
 
 		// Verify
@@ -54,7 +54,7 @@ public class RsaFactoryTest {
 		byte[] expectedResult = randomBytes;
 
 		// Exercise
-		byte[] encrypted = engine.withKey(keyPair.getPublic(), 128).encryptData(expectedResult);
+		byte[] encrypted = engine.withKey(keyPair.getPublic(), 128).encryptData(expectedResult).getResult();
 		byte[] actualResult = engine.withKey(keyPair.getPrivate(), 128).decryptData(encrypted);
 
 		// Verify

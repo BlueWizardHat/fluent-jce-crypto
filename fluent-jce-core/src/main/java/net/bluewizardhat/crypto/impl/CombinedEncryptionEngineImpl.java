@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.security.DigestOutputStream;
 import java.security.Key;
+import java.security.MessageDigest;
 
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
@@ -29,6 +31,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import net.bluewizardhat.crypto.AsymmetricEncryptionEngine;
 import net.bluewizardhat.crypto.CombinedEncryptionEngine;
+import net.bluewizardhat.crypto.EncryptionResult;
 import net.bluewizardhat.crypto.KeyGenerator;
 import net.bluewizardhat.crypto.KeyedFluentEncryptionEngine;
 import net.bluewizardhat.crypto.SymmetricEncryptionEngine;
@@ -66,7 +69,7 @@ public class CombinedEncryptionEngineImpl implements CombinedEncryptionEngine {
 		return new KeyedCombinedEngine(asymmetricKey, symmetricKeyLenght);
 	}
 
-	private class KeyedCombinedEngine implements KeyedFluentEncryptionEngine {
+	private class KeyedCombinedEngine extends BaseKeyedEncryptionEngineImpl implements KeyedFluentEncryptionEngine {
 		private final Key asymmetricKey;
 		private final int symmetricKeyLenght;
 
@@ -76,22 +79,27 @@ public class CombinedEncryptionEngineImpl implements CombinedEncryptionEngine {
 		}
 
 		@Override
-		public byte[] encryptData(byte[] data) {
+		public EncryptionResult<byte[]> encryptData(byte[] data, MessageDigest digester) {
 			// Generate a random SecretKey for data encryption
 			SecretKey symmetricKey = KeyGenerator.generateKey(symmetricEngine.getAlgorithm(), symmetricKeyLenght);
 
 			// Encrypt the symmetric key
-			byte[] encryptedSymmetricKey = asymmetricEngine.withKey(asymmetricKey).encryptData(symmetricKey.getEncoded());
+			byte[] encryptedSymmetricKey = asymmetricEngine.withKey(asymmetricKey).encryptData(symmetricKey.getEncoded(), null).getResult();
 
 			// Encrypt the actual data
-			byte[] encryptedData = symmetricEngine.withKey(symmetricKey).encryptData(data);
+			byte[] encryptedData = symmetricEngine.withKey(symmetricKey).encryptData(data, null).getResult();
 
 			// Return the result
-			return ByteBuffer.allocate(4 + encryptedSymmetricKey.length + encryptedData.length)
+			byte[] returnData = ByteBuffer.allocate(4 + encryptedSymmetricKey.length + encryptedData.length)
 					.putInt(encryptedSymmetricKey.length)
 					.put(encryptedSymmetricKey)
 					.put(encryptedData)
 					.array();
+			if (digester != null) {
+				digester.reset();
+				digester.update(returnData);
+			}
+			return new EncryptionResult<>(returnData, digester);
 		}
 
 		@Override
@@ -117,12 +125,19 @@ public class CombinedEncryptionEngineImpl implements CombinedEncryptionEngine {
 		}
 
 		@Override
-		public CipherOutputStream createEncryptingOutputStream(OutputStream target) throws IOException {
+		public EncryptionResult<CipherOutputStream> createEncryptingOutputStream(OutputStream target, MessageDigest digester) throws IOException {
 			// Generate a random SecretKey for data encryption
 			SecretKey symmetricKey = KeyGenerator.generateKey(symmetricEngine.getAlgorithm(), symmetricKeyLenght);
 
 			// Encrypt the symmetric key
-			byte[] encryptedSymmetricKey = asymmetricEngine.withKey(asymmetricKey).encryptData(symmetricKey.getEncoded());
+			byte[] encryptedSymmetricKey = asymmetricEngine.withKey(asymmetricKey).encryptData(symmetricKey.getEncoded(), null).getResult();
+
+			// Wrap target in a DigestOutputStream if digester is given
+			if (digester != null) {
+				digester.reset();
+				DigestOutputStream dos = new DigestOutputStream(target, digester);
+				target = dos;
+			}
 
 			// write out the encrypted symmetric key and it's length
 			target.write(ByteBuffer.allocate(4 + encryptedSymmetricKey.length)

@@ -59,7 +59,7 @@ public class AesFactoryTest {
 			byte[] expectedResult = randomBytes;
 
 			// Exercise
-			byte[] encrypted = keyedEngine.encryptData(expectedResult);
+			byte[] encrypted = keyedEngine.encryptData(expectedResult).getResult();
 			byte[] actualResult = keyedEngine.decryptData(encrypted);
 
 			// Verify
@@ -81,7 +81,7 @@ public class AesFactoryTest {
 			byte[] expectedResult = randomBytes;
 
 			// Exercise
-			byte[] encrypted = keyedEngine.encryptData(expectedResult);
+			byte[] encrypted = keyedEngine.encryptData(expectedResult).getResult();
 			byte[] actualResult = keyedEngine.decryptData(encrypted);
 
 			// Verify

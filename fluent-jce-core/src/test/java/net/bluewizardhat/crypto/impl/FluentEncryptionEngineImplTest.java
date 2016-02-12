@@ -74,7 +74,7 @@ public class FluentEncryptionEngineImplTest {
 		byte[] expectedResult = randomBytes;
 
 		// Exercise
-		byte[] encrypted = encryptionEngine.withPassword(password, testKeySize).encryptData(expectedResult);
+		byte[] encrypted = encryptionEngine.withPassword(password, testKeySize).encryptData(expectedResult).getResult();
 		byte[] actualResult = encryptionEngine.withPassword(password, testKeySize).decryptData(encrypted);
 
 		// Verify
@@ -91,7 +91,7 @@ public class FluentEncryptionEngineImplTest {
 		expectedException.expectMessage("not properly padded");
 
 		// Exercise
-		byte[] encrypted = encryptionEngine.withPassword(password, testKeySize).encryptData(randomBytes);
+		byte[] encrypted = encryptionEngine.withPassword(password, testKeySize).encryptData(randomBytes).getResult();
 		encryptionEngine.withPassword(badPassword, testKeySize).decryptData(encrypted);
 	}
 
@@ -104,7 +104,7 @@ public class FluentEncryptionEngineImplTest {
 		expectedException.expectMessage("HMAC does not match");
 
 		// Exercise
-		byte[] encrypted = encryptionEngine.withHmac().withPassword(password, testKeySize).encryptData(randomBytes);
+		byte[] encrypted = encryptionEngine.withHmac().withPassword(password, testKeySize).encryptData(randomBytes).getResult();
 		encryptionEngine.withHmac().withPassword(badPassword, testKeySize).decryptData(encrypted);
 	}
 
@@ -114,7 +114,7 @@ public class FluentEncryptionEngineImplTest {
 		byte[] expectedResult = randomBytes;
 
 		// Exercise
-		byte[] encrypted = encryptionEngine.withKey(key).encryptData(expectedResult);
+		byte[] encrypted = encryptionEngine.withKey(key).encryptData(expectedResult).getResult();
 		byte[] actualResult = encryptionEngine.withKey(key).decryptData(encrypted);
 
 		// Verify
@@ -130,7 +130,7 @@ public class FluentEncryptionEngineImplTest {
 		expectedException.expectMessage("not properly padded");
 
 		// Exercise
-		byte[] encrypted = encryptionEngine.withKey(key).encryptData(randomBytes);
+		byte[] encrypted = encryptionEngine.withKey(key).encryptData(randomBytes).getResult();
 		encryptionEngine.withKey(badKey).decryptData(encrypted);
 	}
 
@@ -142,7 +142,7 @@ public class FluentEncryptionEngineImplTest {
 		expectedException.expectMessage("HMAC does not match");
 
 		// Exercise
-		byte[] encrypted = encryptionEngine.withHmac().withKey(key).encryptData(randomBytes);
+		byte[] encrypted = encryptionEngine.withHmac().withKey(key).encryptData(randomBytes).getResult();
 		encryptionEngine.withHmac().withKey(badKey).decryptData(encrypted);
 	}
 
@@ -153,7 +153,7 @@ public class FluentEncryptionEngineImplTest {
 		ByteArrayOutputStream encryptStream = new ByteArrayOutputStream();
 
 		// Exercise
-		try (OutputStream out = encryptionEngine.withKey(key).createEncryptingOutputStream(encryptStream)) {
+		try (OutputStream out = encryptionEngine.withKey(key).createEncryptingOutputStream(encryptStream).getResult()) {
 			out.write(expectedResult);
 			out.flush();
 		}
@@ -177,7 +177,7 @@ public class FluentEncryptionEngineImplTest {
 		ByteArrayOutputStream encryptStream = new ByteArrayOutputStream();
 
 		// Exercise
-		try (OutputStream out = encryptionEngine.withKey(key).createEncryptingOutputStream(encryptStream)) {
+		try (OutputStream out = encryptionEngine.withKey(key).createEncryptingOutputStream(encryptStream).getResult()) {
 			out.write(expectedResult);
 			out.flush();
 		}
@@ -196,7 +196,7 @@ public class FluentEncryptionEngineImplTest {
 		byte[] expectedResult = randomBytes;
 
 		// Exercise
-		byte[] encrypted = encryptionEngine.withKey(key).encryptData(expectedResult);
+		byte[] encrypted = encryptionEngine.withKey(key).encryptData(expectedResult).getResult();
 
 		ByteArrayInputStream encryptedStream = new ByteArrayInputStream(encrypted);
 		byte[] actualResult;
@@ -215,7 +215,7 @@ public class FluentEncryptionEngineImplTest {
 		byte[] expectedResult = randomBytes;
 
 		// Exercise
-		byte[] encrypted = ivLessEncryptionEngine.withKey(key).encryptData(expectedResult);
+		byte[] encrypted = ivLessEncryptionEngine.withKey(key).encryptData(expectedResult).getResult();
 		byte[] actualResult = ivLessEncryptionEngine.withKey(key).decryptData(encrypted);
 
 		// Verify
@@ -230,7 +230,7 @@ public class FluentEncryptionEngineImplTest {
 		byte[] expectedResult = randomBytes;
 
 		// Exercise
-		byte[] encrypted = ivLessEncryptionEngine.withPassword(password, testKeySize).encryptData(expectedResult);
+		byte[] encrypted = ivLessEncryptionEngine.withPassword(password, testKeySize).encryptData(expectedResult).getResult();
 		byte[] actualResult = ivLessEncryptionEngine.withPassword(password, testKeySize).decryptData(encrypted);
 
 		// Verify
@@ -245,7 +245,7 @@ public class FluentEncryptionEngineImplTest {
 		ByteArrayOutputStream encryptStream = new ByteArrayOutputStream();
 
 		// Exercise
-		try (OutputStream out = ivLessEncryptionEngine.withKey(key).createEncryptingOutputStream(encryptStream)) {
+		try (OutputStream out = ivLessEncryptionEngine.withKey(key).createEncryptingOutputStream(encryptStream).getResult()) {
 			out.write(expectedResult);
 			out.flush();
 		}
@@ -269,7 +269,7 @@ public class FluentEncryptionEngineImplTest {
 		ByteArrayOutputStream encryptStream = new ByteArrayOutputStream();
 
 		// Exercise
-		try (OutputStream out = ivLessEncryptionEngine.withKey(key).createEncryptingOutputStream(encryptStream)) {
+		try (OutputStream out = ivLessEncryptionEngine.withKey(key).createEncryptingOutputStream(encryptStream).getResult()) {
 			out.write(expectedResult);
 			out.flush();
 		}
@@ -288,7 +288,7 @@ public class FluentEncryptionEngineImplTest {
 		byte[] expectedResult = randomBytes;
 
 		// Exercise
-		byte[] encrypted = ivLessEncryptionEngine.withKey(key).encryptData(expectedResult);
+		byte[] encrypted = ivLessEncryptionEngine.withKey(key).encryptData(expectedResult).getResult();
 
 		ByteArrayInputStream encryptedStream = new ByteArrayInputStream(encrypted);
 		byte[] actualResult;
