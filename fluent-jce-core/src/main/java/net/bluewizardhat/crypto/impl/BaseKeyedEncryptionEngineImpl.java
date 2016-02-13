@@ -5,15 +5,14 @@ import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import javax.crypto.CipherOutputStream;
-
-import net.bluewizardhat.crypto.EncryptionResult;
 import net.bluewizardhat.crypto.KeyedFluentEncryptionEngine;
 import net.bluewizardhat.crypto.exception.CryptoException;
+import net.bluewizardhat.crypto.util.EncryptionOutputStream;
+import net.bluewizardhat.crypto.util.EncryptionResult;
 
 public abstract class BaseKeyedEncryptionEngineImpl implements KeyedFluentEncryptionEngine {
 	@Override
-	public final EncryptionResult<byte[]> encryptData(byte[] data) {
+	public final EncryptionResult encryptData(byte[] data) {
 		try {
 			MessageDigest digester = MessageDigest.getInstance("SHA-256");
 			return encryptData(data, digester);
@@ -23,7 +22,7 @@ public abstract class BaseKeyedEncryptionEngineImpl implements KeyedFluentEncryp
 	}
 
 	@Override
-	public final EncryptionResult<CipherOutputStream> createEncryptingOutputStream(OutputStream target) throws IOException {
+	public final EncryptionOutputStream createEncryptingOutputStream(OutputStream target) throws IOException {
 		try {
 			MessageDigest digester = MessageDigest.getInstance("SHA-256");
 			return createEncryptingOutputStream(target, digester);

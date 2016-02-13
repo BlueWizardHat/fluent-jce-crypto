@@ -153,7 +153,7 @@ public class FluentEncryptionEngineImplTest {
 		ByteArrayOutputStream encryptStream = new ByteArrayOutputStream();
 
 		// Exercise
-		try (OutputStream out = encryptionEngine.withKey(key).createEncryptingOutputStream(encryptStream).getResult()) {
+		try (OutputStream out = encryptionEngine.withKey(key).createEncryptingOutputStream(encryptStream)) {
 			out.write(expectedResult);
 			out.flush();
 		}
@@ -177,7 +177,7 @@ public class FluentEncryptionEngineImplTest {
 		ByteArrayOutputStream encryptStream = new ByteArrayOutputStream();
 
 		// Exercise
-		try (OutputStream out = encryptionEngine.withKey(key).createEncryptingOutputStream(encryptStream).getResult()) {
+		try (OutputStream out = encryptionEngine.withKey(key).createEncryptingOutputStream(encryptStream)) {
 			out.write(expectedResult);
 			out.flush();
 		}
@@ -245,7 +245,7 @@ public class FluentEncryptionEngineImplTest {
 		ByteArrayOutputStream encryptStream = new ByteArrayOutputStream();
 
 		// Exercise
-		try (OutputStream out = ivLessEncryptionEngine.withKey(key).createEncryptingOutputStream(encryptStream).getResult()) {
+		try (OutputStream out = ivLessEncryptionEngine.withKey(key).createEncryptingOutputStream(encryptStream)) {
 			out.write(expectedResult);
 			out.flush();
 		}
@@ -269,7 +269,7 @@ public class FluentEncryptionEngineImplTest {
 		ByteArrayOutputStream encryptStream = new ByteArrayOutputStream();
 
 		// Exercise
-		try (OutputStream out = ivLessEncryptionEngine.withKey(key).createEncryptingOutputStream(encryptStream).getResult()) {
+		try (OutputStream out = ivLessEncryptionEngine.withKey(key).createEncryptingOutputStream(encryptStream)) {
 			out.write(expectedResult);
 			out.flush();
 		}

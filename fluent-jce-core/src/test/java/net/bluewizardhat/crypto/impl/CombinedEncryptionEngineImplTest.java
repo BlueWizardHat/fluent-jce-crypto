@@ -60,7 +60,7 @@ public class CombinedEncryptionEngineImplTest {
 		ByteArrayOutputStream encryptStream = new ByteArrayOutputStream();
 
 		// Exercise
-		try (OutputStream out = encryptionEngine.withKey(keyPair.getPublic(), 128).createEncryptingOutputStream(encryptStream).getResult()) {
+		try (OutputStream out = encryptionEngine.withKey(keyPair.getPublic(), 128).createEncryptingOutputStream(encryptStream)) {
 			out.write(expectedResult);
 			out.flush();
 		}
@@ -84,7 +84,7 @@ public class CombinedEncryptionEngineImplTest {
 		ByteArrayOutputStream encryptStream = new ByteArrayOutputStream();
 
 		// Exercise
-		try (OutputStream out = encryptionEngine.withKey(keyPair.getPublic(), 128).createEncryptingOutputStream(encryptStream).getResult()) {
+		try (OutputStream out = encryptionEngine.withKey(keyPair.getPublic(), 128).createEncryptingOutputStream(encryptStream)) {
 			out.write(expectedResult);
 			out.flush();
 		}

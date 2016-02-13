@@ -46,13 +46,14 @@ import javax.crypto.spec.SecretKeySpec;
 
 import net.bluewizardhat.crypto.AsymmetricEncryptionEngine;
 import net.bluewizardhat.crypto.BaseFluentEncryptionEngine;
-import net.bluewizardhat.crypto.EncryptionResult;
 import net.bluewizardhat.crypto.KeyedFluentEncryptionEngine;
 import net.bluewizardhat.crypto.SymmetricEncryptionEngine;
 import net.bluewizardhat.crypto.exception.BadHmacException;
 import net.bluewizardhat.crypto.exception.CryptoException;
 import net.bluewizardhat.crypto.securerandom.SecureRandomSupplier;
 import net.bluewizardhat.crypto.securerandom.StaticCountingSecureRandomSupplier;
+import net.bluewizardhat.crypto.util.EncryptionOutputStream;
+import net.bluewizardhat.crypto.util.EncryptionResult;
 
 /**
  * Implementation of an {@link BaseFluentEncryptionEngine}.
@@ -203,7 +204,7 @@ public class FluentEncryptionEngineImpl implements SymmetricEncryptionEngine, As
 		abstract SaltedKey getSaltedKeyWithSalt(byte[] salt);
 
 		@Override
-		public EncryptionResult<byte[]> encryptData(byte[] data, MessageDigest digester) {
+		public EncryptionResult encryptData(byte[] data, MessageDigest digester) {
 			try {
 				SaltedKey saltedKey = getSaltedKeyForEncryption();
 				Iv iv = new Iv();
@@ -226,7 +227,7 @@ public class FluentEncryptionEngineImpl implements SymmetricEncryptionEngine, As
 					digester.reset();
 					digester.update(returnData);
 				}
-				return new EncryptionResult<>(returnData, digester);
+				return new EncryptionResult(returnData, digester);
 			} catch (IllegalBlockSizeException | BadPaddingException e) {
 				throw new CryptoException(algorithm, transformation, e);
 			}
@@ -273,7 +274,7 @@ public class FluentEncryptionEngineImpl implements SymmetricEncryptionEngine, As
 		}
 
 		@Override
-		public EncryptionResult<CipherOutputStream> createEncryptingOutputStream(OutputStream target, MessageDigest digester) throws IOException {
+		public EncryptionOutputStream createEncryptingOutputStream(OutputStream target, MessageDigest digester) throws IOException {
 			Iv iv = new Iv();
 			SaltedKey saltedKey = getSaltedKeyForEncryption();
 			byte[] hmac = calcHmac(saltedKey, iv);
@@ -294,7 +295,7 @@ public class FluentEncryptionEngineImpl implements SymmetricEncryptionEngine, As
 			target.write(hmac);
 
 			// Return a usable OutputStream
-			return new EncryptionResult<>(new CipherOutputStream(target, cipher), digester);
+			return new EncryptionOutputStream(new CipherOutputStream(target, cipher), digester);
 		}
 
 		@Override

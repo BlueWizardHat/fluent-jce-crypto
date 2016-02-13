@@ -26,6 +26,8 @@ import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 
 import net.bluewizardhat.crypto.exception.BadHmacException;
+import net.bluewizardhat.crypto.util.EncryptionOutputStream;
+import net.bluewizardhat.crypto.util.EncryptionResult;
 
 /**
  * An encryption engine that has been initialized to use a given {@link Key} or password to encrypt and decrypt.
@@ -36,11 +38,24 @@ import net.bluewizardhat.crypto.exception.BadHmacException;
  */
 public interface KeyedFluentEncryptionEngine {
 	/**
-	 * Encrypts some data and returns the result. Note if the input data is large this operation may require a large amount of
-	 * memory, in such case you may be better of using {@link #createEncryptingOutputStream(OutputStream)}.
+	 * Encrypts some data and returns the result.
+	 * 
+	 * <p>This is a convenience method that simply calls {@linkplain #encryptData(byte[], MessageDigest)} with a SHA-256
+	 * digester.
 	 */
-	public EncryptionResult<byte[]> encryptData(byte[] data);
-	public EncryptionResult<byte[]> encryptData(byte[] data, MessageDigest digester);
+	public EncryptionResult encryptData(byte[] data);
+
+	/**
+	 * Encrypts some data and returns the result. Note if the input data is large this operation may require a large amount of
+	 * memory, in such case you may be better of using {@link #createEncryptingOutputStream(OutputStream, MessageDigest)}.
+	 *
+	 * <p>Besides encrypting the data, the encrypted data is also run through a message digest algorithm, implemented by the
+	 * given MessageDigest. It is recommended to save not just the encrypted data, but also the digest so that the validity
+	 * of the encrypted data can be easily verified later.
+	 *
+	 * <p>You may pass <code>null</code> as the digester to skip creating a digest.
+	 */
+	public EncryptionResult encryptData(byte[] data, MessageDigest digester);
 
 	/**
 	 * Decrypt some data and returns the result. Note if the input data is large this operation may require a large amount of
@@ -55,9 +70,26 @@ public interface KeyedFluentEncryptionEngine {
 	 * and written.
 	 * Make sure that you do not write to the target OutputStream yourself after calling this method or you may not be able to
 	 * decrypt the data again.
+	 * 
+	 * <p>This is a convenience method that simply calls {@linkplain #createEncryptingOutputStream(OutputStream, MessageDigest)}
+	 * with a SHA-256 digester.
 	 */
-	public EncryptionResult<CipherOutputStream> createEncryptingOutputStream(OutputStream target) throws IOException;
-	public EncryptionResult<CipherOutputStream> createEncryptingOutputStream(OutputStream target, MessageDigest digester) throws IOException;
+	public EncryptionOutputStream createEncryptingOutputStream(OutputStream target) throws IOException;
+
+	/**
+	 * Creates a {@link CipherOutputStream} that when written to will encrypt the given data and write the encrypted data to
+	 * <code>target</code>. The {@link CipherOutputStream} should be flushed before closing or some data may not have been encrypted
+	 * and written.
+	 * Make sure that you do not write to the target OutputStream yourself after calling this method or you may not be able to
+	 * decrypt the data again.
+	 *
+	 * <p>Besides encrypting the data, the encrypted data is also run through a message digest algorithm, implemented by the
+	 * given MessageDigest. It is recommended to save not just the encrypted data, but also the digest so that the validity
+	 * of the encrypted data can be easily verified later.
+	 *
+	 * <p>You may pass <code>null</code> as the digester to skip creating a digest.
+	 */
+	public EncryptionOutputStream createEncryptingOutputStream(OutputStream target, MessageDigest digester) throws IOException;
 
 	/**
 	 * Creates a {@link CipherInputStream} that will read encrypted data from <code>source</code> and decrypt it.

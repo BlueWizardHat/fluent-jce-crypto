@@ -25,16 +25,16 @@ import java.security.Key;
 import java.security.MessageDigest;
 
 import javax.crypto.CipherInputStream;
-import javax.crypto.CipherOutputStream;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import net.bluewizardhat.crypto.AsymmetricEncryptionEngine;
 import net.bluewizardhat.crypto.CombinedEncryptionEngine;
-import net.bluewizardhat.crypto.EncryptionResult;
 import net.bluewizardhat.crypto.KeyGenerator;
 import net.bluewizardhat.crypto.KeyedFluentEncryptionEngine;
 import net.bluewizardhat.crypto.SymmetricEncryptionEngine;
+import net.bluewizardhat.crypto.util.EncryptionOutputStream;
+import net.bluewizardhat.crypto.util.EncryptionResult;
 
 /**
  * An encryption engine that combines asymmetric encryption with symmetric encryption.
@@ -79,7 +79,7 @@ public class CombinedEncryptionEngineImpl implements CombinedEncryptionEngine {
 		}
 
 		@Override
-		public EncryptionResult<byte[]> encryptData(byte[] data, MessageDigest digester) {
+		public EncryptionResult encryptData(byte[] data, MessageDigest digester) {
 			// Generate a random SecretKey for data encryption
 			SecretKey symmetricKey = KeyGenerator.generateKey(symmetricEngine.getAlgorithm(), symmetricKeyLenght);
 
@@ -99,7 +99,7 @@ public class CombinedEncryptionEngineImpl implements CombinedEncryptionEngine {
 				digester.reset();
 				digester.update(returnData);
 			}
-			return new EncryptionResult<>(returnData, digester);
+			return new EncryptionResult(returnData, digester);
 		}
 
 		@Override
@@ -125,7 +125,7 @@ public class CombinedEncryptionEngineImpl implements CombinedEncryptionEngine {
 		}
 
 		@Override
-		public EncryptionResult<CipherOutputStream> createEncryptingOutputStream(OutputStream target, MessageDigest digester) throws IOException {
+		public EncryptionOutputStream createEncryptingOutputStream(OutputStream target, MessageDigest digester) throws IOException {
 			// Generate a random SecretKey for data encryption
 			SecretKey symmetricKey = KeyGenerator.generateKey(symmetricEngine.getAlgorithm(), symmetricKeyLenght);
 

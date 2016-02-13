@@ -5,7 +5,7 @@ This small library implements a fluent style wrapper around Java Cryptography Ex
 
 With this library you can encrypt some data like this
 
-	byte[] encrypted =
+	EncryptionResult encryptionResult =
 		AesFactory
 			.usingAesCfb()
 			.withPassword("secret", 256)
@@ -13,14 +13,13 @@ With this library you can encrypt some data like this
 
 Or write data encrypted to a file
 
-		try (FileOutputStream fileOut = new FileOutputStream("file");
-				OutputStream out = AesFactory
-					.usingAesCfb()
-					.withPassword("secret", 256)
-					.createEncryptingOutputStream(fileOut)) {
-			out.write(data);
-			out.flush();
-		}
+	try (FileOutputStream fileOut = new FileOutputStream("file");
+			OutputStream out = AesFactory
+				.usingAesCfb()
+				.withPassword("secret", 256)
+				.createEncryptingOutputStream(fileOut)) {
+		out.write(data);
+	}
 
 And the library will take care of all the tedious details about setting up the cipher correctly, salting the password, generating a proper initialization vector and all that.
 
