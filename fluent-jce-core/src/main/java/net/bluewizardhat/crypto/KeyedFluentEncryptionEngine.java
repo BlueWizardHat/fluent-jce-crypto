@@ -39,9 +39,9 @@ import net.bluewizardhat.crypto.util.EncryptionResult;
 public interface KeyedFluentEncryptionEngine {
 	/**
 	 * Encrypts some data and returns the result.
-	 * 
+	 *
 	 * <p>This is a convenience method that simply calls {@linkplain #encryptData(byte[], MessageDigest)} with a SHA-256
-	 * digester.
+	 * messageDigest.
 	 */
 	public EncryptionResult encryptData(byte[] data);
 
@@ -53,9 +53,9 @@ public interface KeyedFluentEncryptionEngine {
 	 * given MessageDigest. It is recommended to save not just the encrypted data, but also the digest so that the validity
 	 * of the encrypted data can be easily verified later.
 	 *
-	 * <p>You may pass <code>null</code> as the digester to skip creating a digest.
+	 * <p>You may pass <code>null</code> as the messageDigest to skip creating a digest.
 	 */
-	public EncryptionResult encryptData(byte[] data, MessageDigest digester);
+	public EncryptionResult encryptData(byte[] data, MessageDigest messageDigest);
 
 	/**
 	 * Decrypt some data and returns the result. Note if the input data is large this operation may require a large amount of
@@ -70,9 +70,9 @@ public interface KeyedFluentEncryptionEngine {
 	 * and written.
 	 * Make sure that you do not write to the target OutputStream yourself after calling this method or you may not be able to
 	 * decrypt the data again.
-	 * 
+	 *
 	 * <p>This is a convenience method that simply calls {@linkplain #createEncryptingOutputStream(OutputStream, MessageDigest)}
-	 * with a SHA-256 digester.
+	 * with a SHA-256 messageDigest.
 	 */
 	public EncryptionOutputStream createEncryptingOutputStream(OutputStream target) throws IOException;
 
@@ -87,9 +87,9 @@ public interface KeyedFluentEncryptionEngine {
 	 * given MessageDigest. It is recommended to save not just the encrypted data, but also the digest so that the validity
 	 * of the encrypted data can be easily verified later.
 	 *
-	 * <p>You may pass <code>null</code> as the digester to skip creating a digest.
+	 * <p>You may pass <code>null</code> as the messageDigest to skip creating a digest.
 	 */
-	public EncryptionOutputStream createEncryptingOutputStream(OutputStream target, MessageDigest digester) throws IOException;
+	public EncryptionOutputStream createEncryptingOutputStream(OutputStream target, MessageDigest messageDigest) throws IOException;
 
 	/**
 	 * Creates a {@link CipherInputStream} that will read encrypted data from <code>source</code> and decrypt it.

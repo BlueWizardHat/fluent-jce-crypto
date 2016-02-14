@@ -7,25 +7,29 @@ import java.security.MessageDigest;
 
 import javax.crypto.CipherOutputStream;
 
+import net.bluewizardhat.crypto.KeyedFluentEncryptionEngine;
+
 /**
  * Wrapper around a CipherOutputStream and the MessageDigest used to calculate the digest of encrypted data.
  */
 public class EncryptionOutputStream extends FilterOutputStream {
 	private final CipherOutputStream out;
-	private final MessageDigest digester;
+	private final MessageDigest messageDigest;
 
-	public EncryptionOutputStream(CipherOutputStream out, MessageDigest digester) {
+	public EncryptionOutputStream(CipherOutputStream out, MessageDigest messageDigest) {
 		super(out);
 		this.out = out;
-		this.digester = digester;
+		this.messageDigest = messageDigest;
 	}
 
 	/**
-	 * Allows you to read the digest of the encrypted data after the stream has been closed, just call the
-	 * {@linkplain MessageDigest#digest()} method of the MessageDigest. This method may return null.
+	 * Return the MessageDigest used to calculate a digest of the encrypted data. After the stream has been closed
+	 * one can call the {@linkplain MessageDigest#digest()} method of the MessageDigest to get the digest.
+	 * If {@linkplain KeyedFluentEncryptionEngine#createEncryptingOutputStream(OutputStream, MessageDigest)} was
+	 * called with a <code>null</code> MessageDigest, then this method will return <code>null</code>.
 	 */
-	public MessageDigest getDigester() {
-		return digester;
+	public MessageDigest getMessageDigest() {
+		return messageDigest;
 	}
 
 	// For some reason FilterOutputStream overrides this to a much less efficient version, so lets fix this

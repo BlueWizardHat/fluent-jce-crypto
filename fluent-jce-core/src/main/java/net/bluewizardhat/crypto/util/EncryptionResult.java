@@ -9,9 +9,9 @@ public class EncryptionResult {
 	private final byte[] result;
 	private final byte[] digest;
 
-	public EncryptionResult(byte[] result, MessageDigest digester) {
+	public EncryptionResult(byte[] result, MessageDigest messageDigest) {
 		this.result = result;
-		this.digest = digester != null ? digester.digest() : null;
+		this.digest = messageDigest != null ? messageDigest.digest() : null;
 	}
 
 	/**

@@ -204,7 +204,7 @@ public class FluentEncryptionEngineImpl implements SymmetricEncryptionEngine, As
 		abstract SaltedKey getSaltedKeyWithSalt(byte[] salt);
 
 		@Override
-		public EncryptionResult encryptData(byte[] data, MessageDigest digester) {
+		public EncryptionResult encryptData(byte[] data, MessageDigest messageDigest) {
 			try {
 				SaltedKey saltedKey = getSaltedKeyForEncryption();
 				Iv iv = new Iv();
@@ -223,11 +223,11 @@ public class FluentEncryptionEngineImpl implements SymmetricEncryptionEngine, As
 						.allocate(saltedKey.salt.length + iv.iv.length + hmac.length + encrypted.length)
 						.put(saltedKey.salt).put(iv.iv).put(hmac).put(encrypted)
 						.array();
-				if (digester != null) {
-					digester.reset();
-					digester.update(returnData);
+				if (messageDigest != null) {
+					messageDigest.reset();
+					messageDigest.update(returnData);
 				}
-				return new EncryptionResult(returnData, digester);
+				return new EncryptionResult(returnData, messageDigest);
 			} catch (IllegalBlockSizeException | BadPaddingException e) {
 				throw new CryptoException(algorithm, transformation, e);
 			}
@@ -274,7 +274,7 @@ public class FluentEncryptionEngineImpl implements SymmetricEncryptionEngine, As
 		}
 
 		@Override
-		public EncryptionOutputStream createEncryptingOutputStream(OutputStream target, MessageDigest digester) throws IOException {
+		public EncryptionOutputStream createEncryptingOutputStream(OutputStream target, MessageDigest messageDigest) throws IOException {
 			Iv iv = new Iv();
 			SaltedKey saltedKey = getSaltedKeyForEncryption();
 			byte[] hmac = calcHmac(saltedKey, iv);
@@ -282,10 +282,10 @@ public class FluentEncryptionEngineImpl implements SymmetricEncryptionEngine, As
 			// get the cipher
 			Cipher cipher = getCipher(Cipher.ENCRYPT_MODE, saltedKey.key, iv);
 
-			// Wrap target in a DigestOutputStream if digester is given
-			if (digester != null) {
-				digester.reset();
-				DigestOutputStream dos = new DigestOutputStream(target, digester);
+			// Wrap target in a DigestOutputStream if messageDigest is given
+			if (messageDigest != null) {
+				messageDigest.reset();
+				DigestOutputStream dos = new DigestOutputStream(target, messageDigest);
 				target = dos;
 			}
 
@@ -295,7 +295,7 @@ public class FluentEncryptionEngineImpl implements SymmetricEncryptionEngine, As
 			target.write(hmac);
 
 			// Return a usable OutputStream
-			return new EncryptionOutputStream(new CipherOutputStream(target, cipher), digester);
+			return new EncryptionOutputStream(new CipherOutputStream(target, cipher), messageDigest);
 		}
 
 		@Override
