@@ -31,6 +31,7 @@ import net.bluewizardhat.crypto.KeyedFluentEncryptionEngine;
 public class EncryptionOutputStream extends FilterOutputStream {
 	private final CipherOutputStream out;
 	private final MessageDigest messageDigest;
+	private boolean closed = false;
 
 	public EncryptionOutputStream(CipherOutputStream out, MessageDigest messageDigest) {
 		super(out);
@@ -39,13 +40,19 @@ public class EncryptionOutputStream extends FilterOutputStream {
 	}
 
 	/**
-	 * Return the MessageDigest used to calculate a digest of the encrypted data. After the stream has been closed
-	 * one can call the {@linkplain MessageDigest#digest()} method of the MessageDigest to get the digest.
-	 * If {@linkplain KeyedFluentEncryptionEngine#createEncryptingOutputStream(OutputStream, MessageDigest)} was
-	 * called with a <code>null</code> MessageDigest, then this method will return <code>null</code>.
+	 * Return the digest of the encrypted data.
+	 * <p>If {@linkplain KeyedFluentEncryptionEngine#createEncryptingOutputStream(OutputStream, MessageDigest)} was
+	 * called with a MessageDigest of <code>null</code>, then this method will throw a <code>NullPointerException</code>.
+	 * <p>Note that the digest is reset after this call.
+	 * @throws IllegalStateException if the stream has not been closed.
+	 * @throws NullPointerException if this stream was created without a MessageDigest.
+	 * @see MessageDigest#digest()
 	 */
-	public MessageDigest getMessageDigest() {
-		return messageDigest;
+	public byte[] digest() {
+		if (!closed) {
+			throw new IllegalStateException("Cannot get the digest for an open stream");
+		}
+		return messageDigest.digest();
 	}
 
 	// For some reason FilterOutputStream overrides this to a much less efficient version, so lets fix this
@@ -57,4 +64,11 @@ public class EncryptionOutputStream extends FilterOutputStream {
 	public void write(byte b[], int off, int len) throws IOException {
 		out.write(b, off, len);
 	}
+
+	@Override
+	public void close() throws IOException {
+		super.close();
+		closed = true;
+	}
+
 }

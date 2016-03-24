@@ -2,6 +2,7 @@ package net.bluewizardhat.crypto.impl;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -9,21 +10,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Key;
+import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Random;
 
 import javax.crypto.Cipher;
-
-import net.bluewizardhat.crypto.KeyGenerator;
-import net.bluewizardhat.crypto.SymmetricEncryptionEngine;
-import net.bluewizardhat.crypto.exception.BadHmacException;
-import net.bluewizardhat.crypto.exception.CryptoException;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import net.bluewizardhat.crypto.KeyGenerator;
+import net.bluewizardhat.crypto.SymmetricEncryptionEngine;
+import net.bluewizardhat.crypto.exception.BadHmacException;
+import net.bluewizardhat.crypto.exception.CryptoException;
+import net.bluewizardhat.crypto.util.DigestUtils;
+import net.bluewizardhat.crypto.util.EncryptionOutputStream;
+import net.bluewizardhat.crypto.util.EncryptionResult;
 
 public class FluentEncryptionEngineImplTest {
 
@@ -114,12 +119,14 @@ public class FluentEncryptionEngineImplTest {
 		byte[] expectedResult = randomBytes;
 
 		// Exercise
-		byte[] encrypted = encryptionEngine.withKey(key).encryptData(expectedResult).getResult();
-		byte[] actualResult = encryptionEngine.withKey(key).decryptData(encrypted);
+		EncryptionResult result = encryptionEngine.withKey(key).encryptData(expectedResult);
+		byte[] actualResult = encryptionEngine.withKey(key).decryptData(result.getResult());
+		byte[] expectedDigest = DigestUtils.sha256MessageDigest().digest(result.getResult());
 
 		// Verify
-		assertFalse(Arrays.equals(expectedResult, encrypted));
+		assertFalse(Arrays.equals(expectedResult, result.getResult()));
 		assertArrayEquals(expectedResult, actualResult);
+		assertTrue(MessageDigest.isEqual(expectedDigest, result.getDigest()));
 	}
 
 	@Test
@@ -153,11 +160,14 @@ public class FluentEncryptionEngineImplTest {
 		ByteArrayOutputStream encryptStream = new ByteArrayOutputStream();
 
 		// Exercise
-		try (OutputStream out = encryptionEngine.withKey(key).createEncryptingOutputStream(encryptStream)) {
-			out.write(expectedResult);
-			out.flush();
+		EncryptionOutputStream out = encryptionEngine.withKey(key).createEncryptingOutputStream(encryptStream);
+		try (OutputStream out2 = out) {
+			out2.write(expectedResult);
+			out2.flush();
 		}
+		byte[] actualDigest = out.digest();
 		byte[] encrypted = encryptStream.toByteArray();
+		byte[] expectedDigest = DigestUtils.sha256MessageDigest().digest(encrypted);
 
 		ByteArrayInputStream encryptedStream = new ByteArrayInputStream(encrypted);
 		byte[] actualResult;
@@ -168,6 +178,7 @@ public class FluentEncryptionEngineImplTest {
 		// Verify
 		assertFalse(Arrays.equals(expectedResult, encrypted));
 		assertArrayEquals(expectedResult, actualResult);
+		assertTrue(MessageDigest.isEqual(expectedDigest, actualDigest));
 	}
 
 	@Test
